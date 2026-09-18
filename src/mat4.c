@@ -276,6 +276,10 @@ mat4_read_header (SF_PRIVATE *psf)
 	{	psf_log_printf (psf, "*** Error : zero channel count.\n") ;
 		return SFE_CHANNEL_COUNT_ZERO ;
 		}
+	else if (rows < 0 || cols < 0)
+	{	psf_log_printf (psf, "*** Error : bad matrix dimensions %d x %d.\n", rows, cols) ;
+		return SFE_CHANNEL_COUNT_BAD ;
+		}
 	else if (rows > SF_MAX_CHANNELS)
 	{	psf_log_printf (psf, "*** Error : channel count %d > SF_MAX_CHANNELS.\n", rows) ;
 		return SFE_CHANNEL_COUNT ;
