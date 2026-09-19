@@ -1087,6 +1087,12 @@ sf_command	(SNDFILE *sndfile, int command, void *data, int datasize)
 			if (psf->float_int_mult && psf->float_max < 0.0)
 				/* Scale to prevent wrap-around distortion. */
 				psf->float_max = (32768.0 / 32767.0) * psf_calc_signal_max (psf, SF_FALSE) ;
+			if (psf->float_int_mult && ! (psf->float_max > 0.0))
+				/* A zero (or NaN) signal maximum means there is nothing to
+				** normalize against — an all-zero stream reaches the readers'
+				** `K / psf->float_max` divisions as 1.0/0.0 (issue #1157).
+				** Fall back to the unscaled conversion path instead. */
+				psf->float_int_mult = SF_FALSE ;
 			return old_value ;
 
 		case SFC_SET_SCALE_INT_FLOAT_WRITE :
